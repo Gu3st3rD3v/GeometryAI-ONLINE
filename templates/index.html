@@ -3,60 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geometry AI</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .chat-wrapper { width: 95%; max-width: 500px; height: 90vh; background: #1e1e1e; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
-        header { background: #2d2d2d; padding: 15px; display: flex; align-items: center; border-bottom: 1px solid #333; }
-        .status { width: 10px; height: 10px; background: #00ff88; border-radius: 50%; margin-right: 10px; }
-        #chat-container { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px 14px; border-radius: 10px; max-width: 80%; font-size: 14px; line-height: 1.4; }
-        .user { background: #007bff; align-self: flex-end; }
-        .bot { background: #333; align-self: flex-start; }
-        .input-area { padding: 15px; display: flex; gap: 8px; background: #2d2d2d; }
-        input { flex: 1; padding: 12px; border-radius: 5px; border: none; background: #3d3d3d; color: white; }
-        button { padding: 10px 20px; background: #007bff; border: none; border-radius: 5px; color: white; cursor: pointer; }
-    </style>
+    <title>Geometry AI - Quantum</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="chat-wrapper">
-        <header><div class="status"></div><h2>Geometry AI</h2></header>
+        <header>
+            <div class="header-left">
+                <div class="status-online"></div>
+                <h1>Geometry AI</h1>
+            </div>
+            
+            <div class="reasoning-panel">
+                <span class="reasoning-label">Raciocínio</span>
+                <label class="switch">
+                    <input type="checkbox" id="reasoning-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </header>
+
         <div id="chat-container">
             <div class="message bot">Olá! Eu sou a Geometry AI. Como posso ajudar?</div>
         </div>
+
         <div class="input-area">
             <input type="text" id="user-input" placeholder="Pergunte algo...">
-            <button onclick="enviar()">Enviar</button>
+            <button id="send-btn">Enviar</button>
         </div>
     </div>
-    <script>
-        async function enviar() {
-            const input = document.getElementById('user-input');
-            const texto = input.value.trim();
-            if (!texto) return;
 
-            addMsg(texto, 'user');
-            input.value = '';
-            const loading = addMsg("Pesquisando...", 'bot');
-
-            const res = await fetch('/perguntar', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({pergunta: texto})
-            });
-            const data = await res.json();
-            loading.innerText = data.resposta;
-        }
-
-        function addMsg(txt, tipo) {
-            const div = document.createElement('div');
-            div.className = 'message ' + tipo;
-            div.innerText = txt;
-            document.getElementById('chat-container').appendChild(div);
-            document.getElementById('chat-container').scrollTop = 9999;
-            return div;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
