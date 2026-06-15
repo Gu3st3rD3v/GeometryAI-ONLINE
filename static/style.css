@@ -7,7 +7,7 @@
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     /* Gradiente radial imitando a estética aquática/aero */
-    background: radial-gradient(circle at 50% 0%, #1e3c72 0%, #111b29 70%);
+    background: radial-gradient(circle at 50% 0%, #000000 0%, #111b29 70%);
     background-color: #0b111e;
     display: flex; 
     justify-content: center; 
