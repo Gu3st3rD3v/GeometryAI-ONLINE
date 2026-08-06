@@ -3,6 +3,19 @@ const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const reasoningToggle = document.getElementById('reasoning-toggle');
 
+// Função para converter Markdown (negrito, itálico e quebras de linha) em HTML
+function formatarMarkdown(texto) {
+    if (!texto) return '';
+
+    return texto
+        // Converte **texto** em <strong>texto</strong> (Negrito)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Converte *texto* em <em>texto</em> (Itálico)
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        // Converte quebras de linha em <br>
+        .replace(/\n/g, '<br>');
+}
+
 async function enviarMensagem() {
     const texto = userInput.value.trim();
     if (!texto) return;
@@ -31,11 +44,14 @@ async function enviarMensagem() {
 
         const data = await response.json();
         
-        // 4. Substitui o estado de carregamento e aplica rótulo especial se o modo complexo estiver on
+        // 4. Formata o texto retornado antes de renderizar
+        const respostaFormatada = formatarMarkdown(data.resposta);
+
+        // 5. Substitui o estado de carregamento e aplica HTML interpretado
         if (modoRaciocinio) {
-            botMsgDiv.innerHTML = `<div class="thinking-meta">⚡ Resposta Analítica Gerada:</div>${data.resposta}`;
+            botMsgDiv.innerHTML = `<div class="thinking-meta">⚡ Resposta Analítica Gerada:</div>${respostaFormatada}`;
         } else {
-            botMsgDiv.innerText = data.resposta;
+            botMsgDiv.innerHTML = respostaFormatada;
         }
 
     } catch (error) {
