@@ -145,6 +145,23 @@ input:checked + .slider:before { transform: translateX(22px); }
     border: 1px solid rgba(0, 183, 255, 0.15);
 }
 
+/* Destaque para palavras em negrito e itálico gerados pela IA */
+.message strong {
+    color: #00f0ff;
+    font-weight: 700;
+    text-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+}
+
+.message.user strong {
+    color: #ffffff;
+    text-shadow: none;
+}
+
+.message em {
+    font-style: italic;
+    color: #b3ecff;
+}
+
 /* Destaque visual para o processo cognitivo da IA */
 .thinking-meta {
     font-size: 0.75rem;
