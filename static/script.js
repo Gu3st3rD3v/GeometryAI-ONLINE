@@ -3,51 +3,109 @@ const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const reasoningToggle = document.getElementById('reasoning-toggle');
 
-// Função para converter Markdown (negrito, itálico e quebras de linha) em HTML
+// Função para escapar HTML e evitar problemas de renderização no código
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// Processador completo de Markdown (Blocos de Código, Código Inline, Negrito, Itálico)
 function formatarMarkdown(texto) {
     if (!texto) return '';
 
-    return texto
-        // Converte **texto** em <strong>texto</strong> (Negrito)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        // Converte *texto* em <em>texto</em> (Itálico)
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        // Converte quebras de linha em <br>
-        .replace(/\n/g, '<br>');
+    let blocosCodigo = [];
+
+    // 1. Isola e formata os blocos de código iniciados por ```
+    texto = texto.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
+        const linguagem = lang ? lang.toUpperCase() : 'CÓDIGO';
+        const codigoEscapado = escapeHtml(code.trim());
+        const placeholder = `___CODE_BLOCK_${blocosCodigo.length}___`;
+        
+        blocosCodigo.push(`
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-lang">${linguagem}</span>
+                    <button class="copy-btn" onclick="copiarCodigo(this)">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        Copiar
+                    </button>
+                </div>
+                <pre><code>${codigoEscapado}</code></pre>
+            </div>
+        `);
+        return placeholder;
+    });
+
+    // 2. Formata códigos inline entre crases simples (`código`)
+    texto = texto.replace(/`([^`]+)`/g, function(match, code) {
+        return `<code class="inline-code">${escapeHtml(code)}</code>`;
+    });
+
+    // 3. Formata Negrito (**texto**) e Itálico (*texto*)
+    texto = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    texto = texto.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // 4. Substitui quebras de linha normais por <br>
+    texto = texto.replace(/\n/g, '<br>');
+
+    // 5. Restaura os blocos de código intactos em seus devidos lugares
+    blocosCodigo.forEach((bloco, index) => {
+        texto = texto.replace(`___CODE_BLOCK_${index}___`, bloco);
+    });
+
+    return texto;
 }
+
+// Função global para copiar o conteúdo da caixa de código
+window.copiarCodigo = function(btn) {
+    const container = btn.closest('.code-container');
+    const codeText = container.querySelector('code').innerText;
+
+    navigator.clipboard.writeText(codeText).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '✔ Copiado!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar código: ', err);
+    });
+};
 
 async function enviarMensagem() {
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // Captura o estado em tempo real do Modo Raciocínio (true ou false)
     const modoRaciocinio = reasoningToggle.checked;
 
-    // 1. Adiciona sua mensagem na tela
+    // 1. Mensagem do usuário
     adicionarMensagem(texto, 'user');
     userInput.value = '';
 
-    // 2. Cria um balão dinâmico com base no estado selecionado
+    // 2. Balão de carregamento
     let statusTexto = modoRaciocinio ? "Calculando matriz de dados... Pensando..." : "Digitando...";
     const botMsgDiv = adicionarMensagem(statusTexto, 'bot');
 
     try {
-        // 3. Faz a chamada para o seu servidor enviando ambos os dados estruturados
         const response = await fetch('/perguntar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 pergunta: texto,
-                raciocinio: modoRaciocinio // repassando o booleano ao backend
+                raciocinio: modoRaciocinio 
             })
         });
 
         const data = await response.json();
-        
-        // 4. Formata o texto retornado antes de renderizar
         const respostaFormatada = formatarMarkdown(data.resposta);
 
-        // 5. Substitui o estado de carregamento e aplica HTML interpretado
         if (modoRaciocinio) {
             botMsgDiv.innerHTML = `<div class="thinking-meta">⚡ Resposta Analítica Gerada:</div>${respostaFormatada}`;
         } else {
@@ -66,12 +124,10 @@ function adicionarMensagem(texto, tipo) {
     div.innerText = texto;
     chatContainer.appendChild(div);
     
-    // Rola para o final do chat
     chatContainer.scrollTop = chatContainer.scrollHeight;
     return div;
 }
 
-// Ouvintes de eventos originais preservados
 sendBtn.addEventListener('click', enviarMensagem);
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') enviarMensagem();
