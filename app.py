@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # --- CONFIGURAÇÃO ---
-client = Groq(api_key="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")
+client = Groq(api_key="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")
 
 @app.route('/')
 def home():
