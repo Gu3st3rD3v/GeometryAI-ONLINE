@@ -3,7 +3,7 @@ Uma AI que usa da API Groq para ele funcionar, sem essa API ele não funciona. (
 
 Este é um projeto de uma AI básica desenvolvida para rodar na web. Essa aplicação utiliza Python (Flask) no backend e uma interface moderna construída com HTML5, CSS3 e JavaScript (ES6), juntamente com a API Groq.
 
-Como a AI Funciona?
+# Como a AI Funciona?
 
 O funcionamento segue o fluxo "Client-Server" (Cliente-Servidor):
 
