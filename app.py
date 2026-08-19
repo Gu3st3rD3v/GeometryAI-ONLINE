@@ -48,9 +48,10 @@ def perguntar():
         mensagens_para_enviar.extend(session['historico'][-10:])
         mensagens_para_enviar.append({"role": "user", "content": pergunta})
 
+        # Chamada alterada para o novo modelo
         chat = client.chat.completions.create(
             messages=mensagens_para_enviar,
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
         )
 
         resposta_ia = chat.choices[0].message.content
