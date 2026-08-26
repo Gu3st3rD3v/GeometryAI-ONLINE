@@ -13,4 +13,5 @@ O funcionamento segue o fluxo "Client-Server" (Cliente-Servidor):
 2. Envio (JavaScript): O arquivo script.js captura esse texto e envia uma requisição assíncrona (usando fetch) para o servidor Python.
 3. Processamento (Backend): O servidor Flask (app. py) recebe a pergunta, processa a lógica de resposta (que utiliza a API Groq para retornar a informação para o usuario) e devolve um objeto JSON. O JavaScript recebe esse JSON e cria dinamicamente um novo "balão de fala" no chat para exibir a resposta da assistente.
 
-# Para você utilizar basta acessar o site fixado.
+# PARA UTILIZAR BASTA VOCê CLICAR NO LINK ABAIXO:
+https://geometryaiweb.onrender.com/
