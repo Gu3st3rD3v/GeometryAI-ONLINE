@@ -1,5 +1,6 @@
-# Geometry AI.
-Uma AI que usa da API Groq para ele funcionar, sem essa API ele não funciona. (USO LIVRE)
+# Qual o objetivo do projeto?
+O objetivo do meu projeto é ter uma AI (inteligência artificial) própria, na qual ela responde qualquer pergunta desde que esteja na internet. Ela funciona a partir de uma API ( Application Programming Interface), Uma API é um conjunto de regras, protocolos e ferramentas que define como diferentes sistemas ou aplicações podem interagir entre si, funcionando como uma ponte que facilita a troca de dados e o uso de funcionalidades sem precisar reconstruir tudo do zero. Ela atua como um intermediário: um software (cliente) envia uma solicitação e outro software (servidor) responde com os dados ou executa a ação solicitada. Eu uso a API do Groq Cloud para a minha inteligência artificial funcionar, (sem uma API ela não funciona).
+
 
 Este é um projeto de uma AI básica desenvolvida para rodar na web. Essa aplicação utiliza Python (Flask) no backend e uma interface moderna construída com HTML5, CSS3 e JavaScript (ES6), juntamente com a API Groq.
 
