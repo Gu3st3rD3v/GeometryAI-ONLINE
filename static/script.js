@@ -2,7 +2,93 @@ const chatContainer = document.getElementById('chat-container');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const reasoningToggle = document.getElementById('reasoning-toggle');
+const auroraInteractive = document.getElementById('aurora-interactive');
 
+/* ==================================================
+   1. SEGUNDA AURORA (CONTROLE POR MOUSE OU DEDO)
+   ================================================== */
+function atualizarAuroraInterativa(x, y) {
+    if (!auroraInteractive) return;
+    auroraInteractive.style.left = `${x}px`;
+    auroraInteractive.style.top = `${y}px`;
+    auroraInteractive.classList.add('active');
+}
+
+window.addEventListener('pointermove', (e) => {
+    atualizarAuroraInterativa(e.clientX, e.clientY);
+});
+
+window.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+        atualizarAuroraInterativa(e.touches[0].clientX, e.touches[0].clientY);
+    }
+}, { passive: true });
+
+/* ==================================================
+   2. TOUCH SLIDE NAS LETRAS (MOBILE)
+   ================================================== */
+document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (target && target.classList.contains('interactive-char')) {
+        target.classList.add('touch-active');
+        setTimeout(() => target.classList.remove('touch-active'), 400);
+    }
+}, { passive: true });
+
+/* ==================================================
+   3. ENVOLVER TEXTO EM LETRAS INTERATIVAS
+   ================================================== */
+function envolverLetrasEmSpans(container, ocultarIniciais = false) {
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    const nosDeTexto = [];
+    let no;
+
+    while (no = walker.nextNode()) {
+        if (no.parentElement.closest('svg, button, .code-container')) continue;
+        nosDeTexto.push(no);
+    }
+
+    nosDeTexto.forEach(textNode => {
+        const texto = textNode.nodeValue;
+        if (!texto) return;
+
+        const fragment = document.createDocumentFragment();
+        for (let char of texto) {
+            const span = document.createElement('span');
+            span.className = 'interactive-char';
+            if (ocultarIniciais) {
+                span.classList.add('char-hidden');
+            }
+            span.textContent = char;
+            fragment.appendChild(span);
+        }
+        textNode.parentNode.replaceChild(fragment, textNode);
+    });
+}
+
+/* ==================================================
+   4. EFEITO DIGITAÇÃO (LETRAS SALTANDO)
+   ================================================== */
+function digitarMensagem(container, velocidade = 14) {
+    const letras = container.querySelectorAll('.interactive-char.char-hidden');
+    let i = 0;
+
+    function proximaLetra() {
+        if (i < letras.length) {
+            letras[i].classList.remove('char-hidden');
+            letras[i].classList.add('char-appear');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            i++;
+            setTimeout(proximaLetra, velocidade);
+        }
+    }
+    proximaLetra();
+}
+
+/* ==================================================
+   5. ESCAPAR HTML & FORMATAR MARKDOWN
+   ================================================== */
 function escapeHtml(str) {
     return str
         .replace(/&/g, "&amp;")
@@ -43,7 +129,6 @@ function formatarMarkdown(texto) {
 
     texto = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     texto = texto.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
     texto = texto.replace(/\n/g, '<br>');
 
     blocosCodigo.forEach((bloco, index) => {
@@ -71,6 +156,9 @@ window.copiarCodigo = function(btn) {
     });
 };
 
+/* ==================================================
+   6. ENVIO E GERENCIAMENTO DE MENSAGENS
+   ================================================== */
 async function enviarMensagem() {
     const texto = userInput.value.trim();
     if (!texto) return;
@@ -81,7 +169,7 @@ async function enviarMensagem() {
     userInput.value = '';
 
     let statusTexto = modoRaciocinio ? "Calculando matriz de dados... Pensando..." : "Digitando...";
-    const botMsgDiv = adicionarMensagem(statusTexto, 'bot');
+    const botMsgDiv = adicionarMensagem(statusTexto, 'bot', true);
 
     try {
         const response = await fetch('/perguntar', {
@@ -102,21 +190,40 @@ async function enviarMensagem() {
             botMsgDiv.innerHTML = respostaFormatada;
         }
 
+        // Transforma o texto retornado em letras interativas e executa o efeito de digitação
+        envolverLetrasEmSpans(botMsgDiv, true);
+        digitarMensagem(botMsgDiv);
+
     } catch (error) {
         botMsgDiv.innerText = "Ops, tive um problema para me conectar ao servidor.";
+        envolverLetrasEmSpans(botMsgDiv, false);
         console.error("Erro:", error);
     }
 }
 
-function adicionarMensagem(texto, tipo) {
+function adicionarMensagem(texto, tipo, animarDigitacao = false) {
     const div = document.createElement('div');
     div.classList.add('message', tipo);
     div.innerText = texto;
     chatContainer.appendChild(div);
     
+    envolverLetrasEmSpans(div, animarDigitacao);
+    
+    if (animarDigitacao) {
+        digitarMensagem(div);
+    }
+
     chatContainer.scrollTop = chatContainer.scrollHeight;
     return div;
 }
+
+// Inicializa a mensagem padrão do robô com o efeito das letras
+document.addEventListener('DOMContentLoaded', () => {
+    const primeiraMensagem = document.querySelector('.message.bot');
+    if (primeiraMensagem) {
+        envolverLetrasEmSpans(primeiraMensagem, false);
+    }
+});
 
 sendBtn.addEventListener('click', enviarMensagem);
 userInput.addEventListener('keypress', (e) => {
