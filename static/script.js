@@ -45,7 +45,8 @@ function envolverLetrasEmSpans(container, ocultarIniciais = false) {
     let no;
 
     while (no = walker.nextNode()) {
-        if (no.parentElement.closest('svg, button, .code-container')) continue;
+        // Ignora botões, ícones SVG e o cabeçalho dos blocos de código
+        if (no.parentElement.closest('svg, button, .code-header')) continue;
         nosDeTexto.push(no);
     }
 
@@ -68,9 +69,9 @@ function envolverLetrasEmSpans(container, ocultarIniciais = false) {
 }
 
 /* ==================================================
-   4. EFEITO DIGITAÇÃO (LETRAS SALTANDO)
+   4. EFEITO DIGITAÇÃO COM SCROLL INTELIGENTE
    ================================================== */
-function digitarMensagem(container, velocidade = 14) {
+function digitarMensagem(container, velocidade = 12) {
     const letras = container.querySelectorAll('.interactive-char.char-hidden');
     let i = 0;
 
@@ -78,7 +79,13 @@ function digitarMensagem(container, velocidade = 14) {
         if (i < letras.length) {
             letras[i].classList.remove('char-hidden');
             letras[i].classList.add('char-appear');
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // SCROLL INTELIGENTE: Só rola se o usuário estiver próximo do final do chat
+            const distancerDoFim = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight;
+            if (distancerDoFim < 100) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
             i++;
             setTimeout(proximaLetra, velocidade);
         }
@@ -103,6 +110,7 @@ function formatarMarkdown(texto) {
 
     let blocosCodigo = [];
 
+    // Substitui blocos de código ```linguagem código ```
     texto = texto.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
         const linguagem = lang ? lang.toUpperCase() : 'CÓDIGO';
         const codigoEscapado = escapeHtml(code.trim());
@@ -123,14 +131,17 @@ function formatarMarkdown(texto) {
         return placeholder;
     });
 
+    // Código inline `codigo`
     texto = texto.replace(/`([^`]+)`/g, function(match, code) {
         return `<code class="inline-code">${escapeHtml(code)}</code>`;
     });
 
+    // Negrito e Itálico
     texto = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     texto = texto.replace(/\*(.*?)\*/g, '<em>$1</em>');
     texto = texto.replace(/\n/g, '<br>');
 
+    // Restaura os blocos de código formatados
     blocosCodigo.forEach((bloco, index) => {
         texto = texto.replace(`___CODE_BLOCK_${index}___`, bloco);
     });
@@ -190,7 +201,7 @@ async function enviarMensagem() {
             botMsgDiv.innerHTML = respostaFormatada;
         }
 
-        // Transforma o texto retornado em letras interativas e executa o efeito de digitação
+        // Aplica o efeito de letras e digitação na resposta retornado da API
         envolverLetrasEmSpans(botMsgDiv, true);
         digitarMensagem(botMsgDiv);
 
@@ -211,13 +222,14 @@ function adicionarMensagem(texto, tipo, animarDigitacao = false) {
     
     if (animarDigitacao) {
         digitarMensagem(div);
+    } else {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    chatContainer.scrollTop = chatContainer.scrollHeight;
     return div;
 }
 
-// Inicializa a mensagem padrão do robô com o efeito das letras
+// Inicialização da mensagem padrão de boas-vindas
 document.addEventListener('DOMContentLoaded', () => {
     const primeiraMensagem = document.querySelector('.message.bot');
     if (primeiraMensagem) {
