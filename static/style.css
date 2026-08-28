@@ -1,47 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* DashStack UI Kit - Core Colors */
+    /* DashStack Dark + Glassmorphism Palette */
     --ds-primary: #4880FF;
     --ds-primary-hover: #3567D6;
-    --ds-primary-light: rgba(72, 128, 255, 0.1);
+    --ds-primary-glow: rgba(72, 128, 255, 0.35);
+    --ds-primary-light: rgba(72, 128, 255, 0.15);
     
-    /* DashStack Backgrounds (Light Mode Baseline) */
-    --ds-bg-page: #F5F6FA;
-    --ds-bg-card: #FFFFFF;
-    --ds-bg-subtle: #F4F5F7;
-    --ds-bg-input: #F8F9FB;
-    --ds-bg-code: #1E293B;
+    /* Backgrounds com transparência */
+    --ds-bg-page: #0B0F17;
+    --ds-bg-card: rgba(23, 32, 48, 0.65);
+    --ds-bg-subtle: rgba(255, 255, 255, 0.04);
+    --ds-bg-subtle-hover: rgba(255, 255, 255, 0.08);
+    --ds-bg-input: rgba(15, 23, 38, 0.6);
+    --ds-bg-code: rgba(11, 16, 26, 0.85);
     
-    /* DashStack Typography Colors */
-    --ds-text-title: #202224;
-    --ds-text-body: #333333;
-    --ds-text-muted: #828893;
+    /* Cores de Texto */
+    --ds-text-title: #FFFFFF;
+    --ds-text-body: #E2E8F0;
+    --ds-text-muted: #94A3B8;
     
-    /* Borders & Badges */
-    --ds-border: #E0E0E0;
-    --ds-border-light: #F1F4F9;
+    /* Bordas & Status */
+    --ds-border: rgba(255, 255, 255, 0.08);
+    --ds-border-active: rgba(72, 128, 255, 0.4);
     --ds-status-online: #00B69B;
     
-    /* Radius & Shadows */
-    --ds-radius-card: 16px;
-    --ds-radius-elem: 10px;
-    --ds-shadow-card: 0px 10px 30px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02);
-    --ds-shadow-button: 0px 4px 12px rgba(72, 128, 255, 0.25);
+    /* Arredondamento (Curvas Suaves do 2º Template) */
+    --ds-radius-card: 28px;
+    --ds-radius-bubble: 20px;
+    --ds-radius-elem: 14px;
+    --ds-radius-pill: 999px;
+    
+    /* Sombras & Transparência */
+    --ds-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(72, 128, 255, 0.05);
+    --ds-backdrop: blur(20px) saturate(180%);
     --ds-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Suporte Opcional para Dark Mode no padrão DashStack */
-body.dark-mode {
-    --ds-bg-page: #1B2431;
-    --ds-bg-card: #273142;
-    --ds-bg-subtle: #323D4E;
-    --ds-bg-input: #1B2431;
-    --ds-text-title: #FFFFFF;
-    --ds-text-body: #D5D6D9;
-    --ds-text-muted: #A6A6A6;
-    --ds-border: #323D4E;
-    --ds-border-light: rgba(255, 255, 255, 0.05);
 }
 
 * {
@@ -52,6 +45,7 @@ body.dark-mode {
 
 body {
     font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #1A263B 0%, #0B0F17 75%);
     background-color: var(--ds-bg-page);
     display: flex;
     justify-content: center;
@@ -61,28 +55,31 @@ body {
     color: var(--ds-text-body);
 }
 
-/* Container do Chat Estilo DashStack Card */
+/* Container Principal do Chat (Glassmorphism + Ultra Arredondado) */
 .chat-wrapper {
     width: 100%;
     max-width: 480px;
     height: 88vh;
     background: var(--ds-bg-card);
+    backdrop-filter: var(--ds-backdrop);
+    -webkit-backdrop-filter: var(--ds-backdrop);
     border: 1px solid var(--ds-border);
     border-radius: var(--ds-radius-card);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     box-shadow: var(--ds-shadow-card);
+    position: relative;
 }
 
 /* Cabeçalho */
 header {
-    background: var(--ds-bg-card);
-    padding: 18px 24px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 20px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--ds-border-light);
+    border-bottom: 1px solid var(--ds-border);
 }
 
 .header-left {
@@ -90,6 +87,7 @@ header {
     align-items: center;
 }
 
+/* Indicador Online com Efeito Pulse */
 .status-online {
     width: 10px;
     height: 10px;
@@ -97,7 +95,25 @@ header {
     border-radius: 50%;
     margin-right: 12px;
     position: relative;
-    box-shadow: 0 0 0 3px rgba(0, 182, 155, 0.2);
+    box-shadow: 0 0 10px var(--ds-status-online);
+}
+
+.status-online::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: var(--ds-status-online);
+    border-radius: 50%;
+    animation: pulse 2s infinite ease-in-out;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(2.5); opacity: 0; }
 }
 
 header h1 {
@@ -107,7 +123,7 @@ header h1 {
     letter-spacing: -0.2px;
 }
 
-/* Painel de Raciocínio (Switch) */
+/* Toggle Switch de Raciocínio */
 .reasoning-panel {
     display: flex;
     align-items: center;
@@ -116,7 +132,7 @@ header h1 {
 
 .reasoning-label {
     color: var(--ds-text-muted);
-    font-size: 0.75rem;
+    font-size: 0.725rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.6px;
@@ -125,26 +141,20 @@ header h1 {
 .switch {
     position: relative;
     display: inline-block;
-    width: 40px;
+    width: 42px;
     height: 22px;
 }
 
-.switch input { 
-    opacity: 0; 
-    width: 0; 
-    height: 0; 
-}
+.switch input { opacity: 0; width: 0; height: 0; }
 
 .slider {
     position: absolute; 
     cursor: pointer; 
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    bottom: 0;
-    background-color: #E0E0E0;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--ds-border);
     transition: var(--ds-transition); 
-    border-radius: 30px;
+    border-radius: var(--ds-radius-pill);
 }
 
 .slider:before {
@@ -152,23 +162,25 @@ header h1 {
     content: ""; 
     height: 16px; 
     width: 16px; 
-    left: 3px; 
-    bottom: 3px;
+    left: 2px; 
+    bottom: 2px;
     background-color: #FFFFFF;
     transition: var(--ds-transition); 
     border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 input:checked + .slider {
     background-color: var(--ds-primary);
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 12px var(--ds-primary-glow);
 }
 
-input:checked + .slider:before { 
-    transform: translateX(18px); 
+input:checked + .slider:before {
+    transform: translateX(20px);
 }
 
-/* Área de Mensagens */
+/* Container de Mensagens */
 #chat-container {
     flex: 1;
     padding: 24px;
@@ -177,37 +189,38 @@ input:checked + .slider:before {
     flex-direction: column;
     gap: 16px;
     scroll-behavior: smooth;
-    background-color: var(--ds-bg-card);
 }
 
-/* Balões de Mensagem */
+/* Balões de Mensagem (Design Mais Arredondado) */
 .message {
-    padding: 12px 18px;
-    border-radius: 14px;
+    padding: 14px 20px;
+    border-radius: var(--ds-radius-bubble);
     max-width: 82%;
     line-height: 1.5;
     font-size: 0.925rem;
     word-break: break-word;
+    backdrop-filter: blur(10px);
 }
 
 .user {
-    background: var(--ds-primary);
+    background: linear-gradient(135deg, #4880FF 0%, #3567D6 100%);
     color: #FFFFFF;
     align-self: flex-end;
-    border-bottom-right-radius: 3px;
-    box-shadow: 0 4px 12px rgba(72, 128, 255, 0.15);
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 8px 20px rgba(72, 128, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .bot {
     background: var(--ds-bg-subtle);
-    color: var(--ds-text-title);
+    color: var(--ds-text-body);
     align-self: flex-start;
-    border-bottom-left-radius: 3px;
-    border: 1px solid var(--ds-border-light);
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--ds-border);
 }
 
 .message strong {
-    color: var(--ds-primary);
+    color: #60A5FA;
     font-weight: 700;
 }
 
@@ -217,53 +230,54 @@ input:checked + .slider:before {
 
 .message em {
     font-style: italic;
-    opacity: 0.9;
+    color: var(--ds-text-muted);
 }
 
-/* Meta de Pensamento / Raciocínio */
+/* Tag / Meta de Pensamento */
 .thinking-meta {
     font-size: 0.75rem;
-    color: var(--ds-primary);
+    color: #60A5FA;
     border-left: 3px solid var(--ds-primary);
     background: var(--ds-primary-light);
-    padding: 6px 10px;
-    border-radius: 0 6px 6px 0;
+    padding: 6px 12px;
+    border-radius: 0 var(--ds-radius-elem) var(--ds-radius-elem) 0;
     margin-bottom: 8px;
     font-weight: 600;
 }
 
-/* Bloco de Código */
+/* Bloco de Código Dark & Arredondado */
 .code-container {
     margin: 12px 0;
     background: var(--ds-bg-code);
-    border-radius: var(--ds-radius-elem);
+    border: 1px solid var(--ds-border);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .code-header {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
     padding: 8px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--ds-border);
 }
 
 .code-lang {
     font-size: 0.725rem;
-    color: #94A3B8;
+    color: var(--ds-primary);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
 }
 
 .copy-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #E2E8F0;
-    padding: 4px 10px;
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--ds-border);
+    color: var(--ds-text-body);
+    padding: 5px 12px;
+    border-radius: var(--ds-radius-pill);
     font-size: 0.725rem;
     font-family: inherit;
     font-weight: 600;
@@ -277,51 +291,54 @@ input:checked + .slider:before {
 .copy-btn:hover {
     background: var(--ds-primary);
     color: #FFFFFF;
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 10px var(--ds-primary-glow);
 }
 
 .copy-btn.copied {
     background: var(--ds-status-online);
     color: #FFFFFF;
+    border-color: var(--ds-status-online);
 }
 
 .code-container pre {
     margin: 0;
-    padding: 14px;
+    padding: 14px 16px;
     overflow-x: auto;
 }
 
 .code-container pre code {
     font-family: 'Fira Code', 'Consolas', monospace;
     font-size: 0.85rem;
-    line-height: 1.45;
-    color: #E2E8F0;
+    line-height: 1.5;
+    color: #93C5FD;
 }
 
 .inline-code {
     background: var(--ds-primary-light);
-    color: var(--ds-primary);
-    padding: 2px 6px;
-    border-radius: 4px;
+    color: #93C5FD;
+    padding: 3px 8px;
+    border-radius: 6px;
     font-family: monospace;
     font-size: 0.85rem;
-    font-weight: 600;
+    border: 1px solid rgba(72, 128, 255, 0.2);
 }
 
 /* Área de Input */
 .input-area {
     padding: 16px 20px;
-    background: var(--ds-bg-card);
+    background: rgba(255, 255, 255, 0.01);
     display: flex;
     gap: 12px;
-    border-top: 1px solid var(--ds-border-light);
+    border-top: 1px solid var(--ds-border);
 }
 
 input {
     flex: 1;
     background: var(--ds-bg-input);
     border: 1px solid var(--ds-border);
-    padding: 12px 16px;
-    border-radius: var(--ds-radius-elem);
+    padding: 14px 20px;
+    border-radius: var(--ds-radius-pill);
     color: var(--ds-text-title);
     outline: none;
     font-family: inherit;
@@ -335,35 +352,35 @@ input::placeholder {
 
 input:focus {
     border-color: var(--ds-primary);
-    background: var(--ds-bg-card);
-    box-shadow: 0 0 0 3px rgba(72, 128, 255, 0.15);
+    background: rgba(15, 23, 38, 0.85);
+    box-shadow: 0 0 15px var(--ds-primary-glow);
 }
 
 button {
-    background: var(--ds-primary);
+    background: linear-gradient(135deg, #4880FF 0%, #3567D6 100%);
     color: #FFFFFF;
     border: none;
-    padding: 12px 22px;
-    border-radius: var(--ds-radius-elem);
+    padding: 14px 26px;
+    border-radius: var(--ds-radius-pill);
     font-family: inherit;
     font-weight: 700;
     font-size: 0.925rem;
     cursor: pointer;
     transition: var(--ds-transition);
-    box-shadow: var(--ds-shadow-button);
+    box-shadow: 0 6px 16px rgba(72, 128, 255, 0.3);
 }
 
 button:hover {
-    background: var(--ds-primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(72, 128, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(72, 128, 255, 0.45);
+    filter: brightness(1.1);
 }
 
 button:active {
     transform: translateY(0);
 }
 
-/* Custom Scrollbar no padrão DashStack */
+/* Custom Scrollbar Discreta */
 #chat-container::-webkit-scrollbar { 
     width: 6px; 
 }
@@ -373,10 +390,10 @@ button:active {
 }
 
 #chat-container::-webkit-scrollbar-thumb { 
-    background: #E0E0E0; 
-    border-radius: 10px; 
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: var(--ds-radius-pill); 
 }
 
 #chat-container::-webkit-scrollbar-thumb:hover { 
-    background: var(--ds-text-muted); 
+    background: rgba(255, 255, 255, 0.25); 
 }
