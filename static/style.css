@@ -164,8 +164,6 @@ input:checked + .slider:before { transform: translateX(22px); }
     font-style: italic;
 }
 
-/* --- ESTILIZAÇÃO DAS CAIXAS DE CÓDIGO --- */
-
 .code-container {
     margin: 10px 0;
     background: #090e17;
