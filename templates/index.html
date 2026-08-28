@@ -8,15 +8,16 @@
 </head>
 <body>
 
-    <!-- Aurora 1: Fundo Animado Automático -->
+    <!-- Fundo Aurora (Automática + Interativa) -->
     <div class="aurora-bg">
+        <!-- Aurora 1: Movimento Automático -->
         <div class="aurora-blob blob-1"></div>
         <div class="aurora-blob blob-2"></div>
         <div class="aurora-blob blob-3"></div>
+        
+        <!-- Aurora 2: Segue o Mouse / Touch -->
+        <div class="aurora-blob blob-interactive" id="aurora-interactive"></div>
     </div>
-
-    <!-- Aurora 2: Interativa (Segue Mouse / Toque) -->
-    <div class="aurora-interactive" id="aurora-interactive"></div>
 
     <div class="chat-wrapper" id="chat-wrapper">
         <header>
@@ -37,7 +38,7 @@
         </header>
 
         <div id="chat-container">
-            <div class="message bot" id="initial-bot-message">Olá! Eu sou a Geometry AI. Como posso ajudar?</div>
+            <div class="message bot">Olá! Eu sou a Geometry AI. Como posso ajudar?</div>
         </div>
 
         <div class="input-area">
