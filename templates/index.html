@@ -2,12 +2,18 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Geometry AI - Quantum</title>
-    <!-- O ?v=2 impede o navegador de usar a versão em cache -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+
+    <!-- Fundo Aurora Animado -->
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
 
     <div class="chat-wrapper" id="chat-wrapper">
         <header>
@@ -17,11 +23,6 @@
             </div>
             
             <div class="header-controls">
-                <!-- Botão de Alternar Tema -->
-                <button type="button" id="theme-toggle" class="theme-btn" title="Alternar Tema">
-                    <span id="theme-icon">☀️</span>
-                </button>
-
                 <!-- Switch de Raciocínio -->
                 <div class="reasoning-panel">
                     <span class="reasoning-label">Raciocínio</span>
@@ -38,11 +39,11 @@
         </div>
 
         <div class="input-area">
-            <input type="text" id="user-input" placeholder="Pergunte algo...">
+            <input type="text" id="user-input" placeholder="Pergunte algo..." autocomplete="off">
             <button type="button" id="send-btn">Enviar</button>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=2"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
