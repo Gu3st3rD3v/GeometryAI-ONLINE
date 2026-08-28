@@ -81,7 +81,7 @@ function digitarMensagem(container) {
     if (!letras.length) return;
 
     let idx = 0;
-    const lote = 4; // Processa 4 caracteres por frame (8x mais rápido e super fluido)
+    const lote = 20; // Processa 4 caracteres por frame (8x mais rápido e super fluido)
 
     function passo() {
         if (idx < letras.length) {
