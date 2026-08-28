@@ -5,39 +5,48 @@ const reasoningToggle = document.getElementById('reasoning-toggle');
 const auroraInteractive = document.getElementById('aurora-interactive');
 
 /* ==================================================
-   1. SEGUNDA AURORA (CONTROLE POR MOUSE OU DEDO)
+   1. AURORA INTERATIVA COM THROTTLE (rAF)
    ================================================== */
+let pointerTicking = false;
+
 function atualizarAuroraInterativa(x, y) {
     if (!auroraInteractive) return;
-    auroraInteractive.style.left = `${x}px`;
-    auroraInteractive.style.top = `${y}px`;
+    auroraInteractive.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
     auroraInteractive.classList.add('active');
 }
 
 window.addEventListener('pointermove', (e) => {
-    atualizarAuroraInterativa(e.clientX, e.clientY);
-});
-
-window.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) {
-        atualizarAuroraInterativa(e.touches[0].clientX, e.touches[0].clientY);
+    if (!pointerTicking) {
+        requestAnimationFrame(() => {
+            atualizarAuroraInterativa(e.clientX, e.clientY);
+            pointerTicking = false;
+        });
+        pointerTicking = true;
     }
 }, { passive: true });
 
 /* ==================================================
-   2. TOUCH SLIDE NAS LETRAS (MOBILE)
+   2. TOUCH SLIDE NAS LETRAS (MOBILE OTIMIZADO)
    ================================================== */
+let touchTicking = false;
+
 document.addEventListener('touchmove', (e) => {
-    const touch = e.touches[0];
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (target && target.classList.contains('interactive-char')) {
-        target.classList.add('touch-active');
-        setTimeout(() => target.classList.remove('touch-active'), 400);
+    if (!touchTicking && e.touches.length > 0) {
+        requestAnimationFrame(() => {
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (target && target.classList.contains('interactive-char')) {
+                target.classList.add('touch-active');
+                setTimeout(() => target.classList.remove('touch-active'), 300);
+            }
+            touchTicking = false;
+        });
+        touchTicking = true;
     }
 }, { passive: true });
 
 /* ==================================================
-   3. ENVOLVER TEXTO EM LETRAS INTERATIVAS
+   3. ENVOLVER TEXTO EM SPANS (OTIMIZADO)
    ================================================== */
 function envolverLetrasEmSpans(container, ocultarIniciais = false) {
     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
@@ -54,13 +63,10 @@ function envolverLetrasEmSpans(container, ocultarIniciais = false) {
         if (!texto) return;
 
         const fragment = document.createDocumentFragment();
-        for (let char of texto) {
+        for (let i = 0; i < texto.length; i++) {
             const span = document.createElement('span');
-            span.className = 'interactive-char';
-            if (ocultarIniciais) {
-                span.classList.add('char-hidden');
-            }
-            span.textContent = char;
+            span.className = ocultarIniciais ? 'interactive-char char-hidden' : 'interactive-char';
+            span.textContent = texto[i];
             fragment.appendChild(span);
         }
         textNode.parentNode.replaceChild(fragment, textNode);
@@ -68,29 +74,33 @@ function envolverLetrasEmSpans(container, ocultarIniciais = false) {
 }
 
 /* ==================================================
-   4. EFEITO DIGITAÇÃO ULTRA-RÁPIDO (8X MAIS RÁPIDO)
+   4. EFEITO DIGITAÇÃO 8X VIA requestAnimationFrame
    ================================================== */
-function digitarMensagem(container, velocidade = 2) {
+function digitarMensagem(container) {
     const letras = container.querySelectorAll('.interactive-char.char-hidden');
-    let i = 0;
-    const lote = 4; // Processa 4 letras por ciclo para atingir velocidade 8x sem trava do navegador
+    if (!letras.length) return;
 
-    function proximaLetra() {
-        if (i < letras.length) {
-            for (let j = 0; j < lote && i < letras.length; j++, i++) {
-                letras[i].classList.remove('char-hidden');
-                letras[i].classList.add('char-appear');
+    let idx = 0;
+    const lote = 4; // Processa 4 caracteres por frame (8x mais rápido e super fluido)
+
+    function passo() {
+        if (idx < letras.length) {
+            const limite = Math.min(idx + lote, letras.length);
+            for (; idx < limite; idx++) {
+                letras[idx].classList.remove('char-hidden');
+                letras[idx].classList.add('char-appear');
             }
 
-            const distancerDoFim = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight;
-            if (distancerDoFim < 100) {
+            const distanciaDoFim = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight;
+            if (distanciaDoFim < 100) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
-            setTimeout(proximaLetra, velocidade);
+            requestAnimationFrame(passo);
         }
     }
-    proximaLetra();
+
+    requestAnimationFrame(passo);
 }
 
 /* ==================================================
@@ -108,7 +118,7 @@ function escapeHtml(str) {
 function formatarMarkdown(texto) {
     if (!texto) return '';
 
-    let blocosCodigo = [];
+    const blocosCodigo = [];
 
     texto = texto.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
         const linguagem = lang ? lang.toUpperCase() : 'CÓDIGO';
@@ -130,17 +140,14 @@ function formatarMarkdown(texto) {
         return placeholder;
     });
 
-    texto = texto.replace(/`([^`]+)`/g, function(match, code) {
-        return `<code class="inline-code">${escapeHtml(code)}</code>`;
-    });
-
+    texto = texto.replace(/`([^`]+)`/g, (match, code) => `<code class="inline-code">${escapeHtml(code)}</code>`);
     texto = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     texto = texto.replace(/\*(.*?)\*/g, '<em>$1</em>');
     texto = texto.replace(/\n/g, '<br>');
 
-    blocosCodigo.forEach((bloco, index) => {
-        texto = texto.replace(`___CODE_BLOCK_${index}___`, bloco);
-    });
+    for (let i = 0; i < blocosCodigo.length; i++) {
+        texto = texto.replace(`___CODE_BLOCK_${i}___`, blocosCodigo[i]);
+    }
 
     return texto;
 }
@@ -157,7 +164,7 @@ window.copiarCodigo = function(btn) {
         setTimeout(() => {
             btn.innerHTML = originalHTML;
             btn.classList.remove('copied');
-        }, 2000);
+        }, 1800);
     }).catch(err => {
         console.error('Erro ao copiar código: ', err);
     });
@@ -175,7 +182,7 @@ async function enviarMensagem() {
     adicionarMensagem(texto, 'user');
     userInput.value = '';
 
-    let statusTexto = modoRaciocinio ? "Calculando matriz de dados... Pensando..." : "Digitando...";
+    const statusTexto = modoRaciocinio ? "Calculando matriz de dados... Pensando..." : "Digitando...";
     const botMsgDiv = adicionarMensagem(statusTexto, 'bot', true);
 
     try {
