@@ -7,7 +7,7 @@
     /* Cores de Destaque (DashStack UI) */
     --ds-primary: #4880FF;
     --ds-primary-hover: #3567D6;
-    --ds-primary-glow: rgba(72, 128, 255, 0.35);
+    --ds-primary-glow: rgba(72, 128, 255, 0.4);
     --ds-primary-light: rgba(72, 128, 255, 0.15);
 
     /* Backgrounds e Superfícies (Modo Escuro) */
@@ -28,7 +28,7 @@
     --ds-border: rgba(255, 255, 255, 0.08);
     --ds-status-online: #00B69B;
 
-    /* Arredondamento (Curvas Suaves) */
+    /* Arredondamento */
     --ds-radius-card: 28px;
     --ds-radius-bubble: 20px;
     --ds-radius-elem: 14px;
@@ -37,7 +37,7 @@
     /* Sombras e Efeitos */
     --ds-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(72, 128, 255, 0.05);
     --ds-backdrop: blur(20px) saturate(180%);
-    --ds-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --ds-transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==================================================
@@ -61,12 +61,29 @@ body.light-theme {
 }
 
 /* ==================================================
-   RESET & LAYOUT BASE
+   RESET & TRANSIÇÃO GLOBAL ULTRA SUAVE
    ================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+body, 
+.chat-wrapper, 
+header, 
+.message, 
+input, 
+button, 
+.theme-btn, 
+.code-container, 
+.slider {
+    transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                backdrop-filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -79,11 +96,10 @@ body {
     height: 100vh;
     overflow: hidden;
     color: var(--ds-text-body);
-    transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ==================================================
-   CONTAINER DO CHAT (GLASSMORPHISM CARD)
+   CONTAINER DO CHAT & ANIMAÇÃO PULSE ON SWITCH
    ================================================== */
 .chat-wrapper {
     width: 100%;
@@ -99,7 +115,23 @@ body {
     overflow: hidden;
     box-shadow: var(--ds-shadow-card);
     position: relative;
-    transition: var(--ds-transition);
+}
+
+/* Efeito Ripple na borda do Chat ao trocar de tema */
+.chat-wrapper.theme-transition {
+    animation: themePulse 0.65s ease-out;
+}
+
+@keyframes themePulse {
+    0% {
+        box-shadow: var(--ds-shadow-card);
+    }
+    50% {
+        box-shadow: 0 0 35px var(--ds-primary-glow), 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+        box-shadow: var(--ds-shadow-card);
+    }
 }
 
 /* ==================================================
@@ -112,7 +144,6 @@ header {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--ds-border);
-    transition: var(--ds-transition);
 }
 
 .header-left {
@@ -120,7 +151,6 @@ header {
     align-items: center;
 }
 
-/* Status Online com Pulsação */
 .status-online {
     width: 10px;
     height: 10px;
@@ -167,28 +197,57 @@ header h1 {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--ds-border);
     color: var(--ds-text-title);
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--ds-radius-pill);
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.05rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--ds-transition);
     outline: none;
+    user-select: none;
 }
 
 body.light-theme .theme-btn {
     background: #FFFFFF;
     border-color: #E0E0E0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .theme-btn:hover {
     background: var(--ds-primary-light);
     border-color: var(--ds-primary);
     transform: scale(1.08);
+}
+
+.theme-btn:active {
+    transform: scale(0.95);
+}
+
+/* Animação do Ícone (Spin & Scale) */
+#theme-icon {
+    display: inline-block;
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-btn.animating #theme-icon {
+    animation: iconSpin 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes iconSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: rotate(180deg) scale(0.2);
+        opacity: 0.1;
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
+    }
 }
 
 /* Switch de Raciocínio */
@@ -221,7 +280,6 @@ body.light-theme .theme-btn {
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(255, 255, 255, 0.12);
     border: 1px solid var(--ds-border);
-    transition: var(--ds-transition); 
     border-radius: var(--ds-radius-pill);
 }
 
@@ -237,7 +295,7 @@ body.light-theme .slider {
     left: 2px; 
     bottom: 2px;
     background-color: #FFFFFF;
-    transition: var(--ds-transition); 
+    transition: var(--ds-transition-fast); 
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -273,7 +331,6 @@ input:checked + .slider:before {
     font-size: 0.925rem;
     word-break: break-word;
     backdrop-filter: blur(10px);
-    transition: var(--ds-transition);
 }
 
 .user {
@@ -375,7 +432,6 @@ body.light-theme .thinking-meta {
     display: flex;
     align-items: center;
     gap: 4px;
-    transition: var(--ds-transition);
 }
 
 .copy-btn:hover {
@@ -427,7 +483,6 @@ body.light-theme .inline-code {
     display: flex;
     gap: 12px;
     border-top: 1px solid var(--ds-border);
-    transition: var(--ds-transition);
 }
 
 body.light-theme .input-area {
@@ -444,7 +499,6 @@ input {
     outline: none;
     font-family: inherit;
     font-size: 0.925rem;
-    transition: var(--ds-transition);
 }
 
 input::placeholder {
@@ -470,7 +524,6 @@ button#send-btn {
     font-weight: 700;
     font-size: 0.925rem;
     cursor: pointer;
-    transition: var(--ds-transition);
     box-shadow: 0 6px 16px rgba(72, 128, 255, 0.3);
 }
 
