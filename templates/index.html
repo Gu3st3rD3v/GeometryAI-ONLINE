@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geometry AI - Quantum</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- O ?v=2 impede o navegador de usar a versão em cache -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
 </head>
 <body>
 
@@ -16,8 +17,8 @@
             </div>
             
             <div class="header-controls">
-                <!-- Botão de Alternar Tema com evento onclick nativo -->
-                <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" title="Alternar Tema">
+                <!-- Botão de Alternar Tema -->
+                <button type="button" id="theme-toggle" class="theme-btn" title="Alternar Tema">
                     <span id="theme-icon">☀️</span>
                 </button>
 
@@ -42,6 +43,6 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2"></script>
 </body>
 </html>
