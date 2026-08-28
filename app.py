@@ -22,7 +22,7 @@ def home():
 @app.route('/perguntar', methods=['POST'])
 def perguntar():
     if not client:
-        return jsonify({"resposta": "Erro: A variável GROQ_API_KEY não foi configurada no painel do Render."})
+        return jsonify({"resposta": "Erro: A variável GROQ_API_KEY não foi configurada no painel de administração."})
 
     try:
         dados = request.json
@@ -42,7 +42,7 @@ def perguntar():
         )
 
         if modo_raciocinio:
-            instrucao_sistema += " Forneça uma resposta analítica, detalhada e explicada passo a passo."
+            instrucao_sistema += " Forneça uma resposta muito analítica, detalhada e explicada passo a passo. E seja sincero."
 
         mensagens_para_enviar = [{"role": "system", "content": instrucao_sistema}]
         mensagens_para_enviar.extend(session['historico'][-10:])
