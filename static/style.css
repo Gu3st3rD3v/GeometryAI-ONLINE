@@ -46,8 +46,8 @@
 body.light-theme {
     --ds-bg-page: #F5F6FA;
     --ds-bg-gradient: radial-gradient(circle at 50% 0%, #EBF2FF 0%, #F5F6FA 75%);
-    --ds-bg-card: rgba(255, 255, 255, 0.85);
-    --ds-bg-header: rgba(255, 255, 255, 0.4);
+    --ds-bg-card: rgba(255, 255, 255, 0.88);
+    --ds-bg-header: rgba(255, 255, 255, 0.6);
     --ds-bg-subtle: #F4F5F7;
     --ds-bg-input: #FFFFFF;
     --ds-bg-code: #1E293B;
@@ -57,7 +57,7 @@ body.light-theme {
     --ds-text-muted: #828893;
 
     --ds-border: #E0E0E0;
-    --ds-shadow-card: 0 20px 40px rgba(0, 0, 0, 0.06);
+    --ds-shadow-card: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
 /* ==================================================
@@ -162,7 +162,7 @@ header h1 {
     gap: 14px;
 }
 
-/* Botão de Alternar Tema (Escuro / Claro) */
+/* Botão de Alternar Tema */
 .theme-btn {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--ds-border);
@@ -182,7 +182,7 @@ header h1 {
 body.light-theme .theme-btn {
     background: #FFFFFF;
     border-color: #E0E0E0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .theme-btn:hover {
@@ -191,7 +191,7 @@ body.light-theme .theme-btn {
     transform: scale(1.08);
 }
 
-/* Painel do Switch (Raciocínio) */
+/* Switch de Raciocínio */
 .reasoning-panel {
     display: flex;
     align-items: center;
@@ -334,7 +334,7 @@ body.light-theme .thinking-meta {
 }
 
 /* ==================================================
-   BLOCOS DE CÓDIGO & CODE INLINE
+   BLOCOS DE CÓDIGO
    ================================================== */
 .code-container {
     margin: 12px 0;
@@ -419,7 +419,7 @@ body.light-theme .inline-code {
 }
 
 /* ==================================================
-   ÁREA DE INPUT E BOTÃO DE ENVIO
+   ÁREA DE INPUT
    ================================================== */
 .input-area {
     padding: 16px 20px;
@@ -485,7 +485,7 @@ button#send-btn:active {
 }
 
 /* ==================================================
-   SCROLLBAR CUSTOMIZADA
+   SCROLLBAR
    ================================================== */
 #chat-container::-webkit-scrollbar { 
     width: 6px; 
