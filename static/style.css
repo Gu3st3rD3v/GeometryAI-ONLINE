@@ -14,7 +14,7 @@
     --ds-bg-header: rgba(255, 255, 255, 0.03);
     --ds-bg-subtle: rgba(255, 255, 255, 0.05);
     --ds-bg-input: rgba(15, 23, 42, 0.75);
-    --ds-bg-code: rgba(10, 15, 26, 0.9);
+    --ds-bg-code: rgba(10, 15, 26, 0.95);
 
     --ds-text-title: #FFFFFF;
     --ds-text-body: #F1F5F9;
@@ -84,7 +84,6 @@ body {
     pointer-events: none;
 }
 
-/* Aurora 1 (Automática) */
 .blob-1 {
     top: -10%;
     left: -10%;
@@ -112,7 +111,6 @@ body {
     animation: auroraMove3 10s infinite alternate ease-in-out;
 }
 
-/* Aurora 2 (Controlada pelo Mouse/Dedo) */
 .blob-interactive {
     width: 50vw;
     height: 50vw;
@@ -145,7 +143,7 @@ body {
 }
 
 /* ==================================================
-   CONTAINER DO CHAT (RESPONSIVO & GLASS)
+   CONTAINER DO CHAT
    ================================================== */
 .chat-wrapper {
     position: relative;
@@ -300,7 +298,7 @@ input:checked + .slider:before {
 .message {
     padding: 13px 18px;
     border-radius: var(--ds-radius-bubble);
-    max-width: 85%;
+    max-width: 88%;
     line-height: 1.5;
     font-size: 0.925rem;
     word-break: break-word;
@@ -323,7 +321,7 @@ input:checked + .slider:before {
     border: 1px solid var(--ds-border);
 }
 
-/* Animação e Efeitos interativos para cada letra */
+/* Letras Interativas */
 .interactive-char {
     display: inline-block;
     white-space: pre-wrap;
@@ -331,33 +329,117 @@ input:checked + .slider:before {
     cursor: default;
 }
 
-/* Efeito ao passar o mouse ou o dedo por cima */
 .interactive-char:hover,
 .interactive-char.touch-active {
-    transform: scale(1.5) translateY(-4px);
+    transform: scale(1.4) translateY(-3px);
     color: #60A5FA;
-    text-shadow: 0 0 12px rgba(96, 165, 250, 0.9);
+    text-shadow: 0 0 10px rgba(96, 165, 250, 0.9);
 }
 
-/* Animação das letras saltando ao serem digitadas */
 .char-hidden {
     opacity: 0;
-    transform: translateY(10px) scale(0.4);
+    transform: translateY(8px) scale(0.5);
     display: inline-block;
 }
 
 .char-appear {
-    animation: charJump 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: charJump 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes charJump {
-    0% { opacity: 0; transform: translateY(10px) scale(0.4); }
-    60% { transform: translateY(-5px) scale(1.3); }
+    0% { opacity: 0; transform: translateY(8px) scale(0.5); }
+    60% { transform: translateY(-4px) scale(1.2); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ==================================================
-   ÁREA DE INPUT (OTIMIZADA PARA MOBILE)
+   ESTILOS DOS BLOCOS DE CÓDIGO E INLINE CODE
+   ================================================== */
+.code-container {
+    background: var(--ds-bg-code);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius-elem);
+    margin: 12px 0;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.code-header {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ds-border);
+}
+
+.code-lang {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--ds-primary);
+    letter-spacing: 0.6px;
+}
+
+.copy-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--ds-border);
+    color: var(--ds-text-muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.725rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--ds-transition-smooth);
+}
+
+.copy-btn:hover {
+    background: var(--ds-primary);
+    color: #FFFFFF;
+    border-color: var(--ds-primary);
+}
+
+.copy-btn.copied {
+    background: var(--ds-status-online);
+    color: #FFFFFF;
+    border-color: var(--ds-status-online);
+}
+
+pre {
+    margin: 0;
+    padding: 14px;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #E2E8F0;
+    line-height: 1.45;
+}
+
+code {
+    font-family: inherit;
+}
+
+.inline-code {
+    background: var(--ds-bg-code);
+    color: #60A5FA;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.875em;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: monospace;
+}
+
+.thinking-meta {
+    font-size: 0.8rem;
+    color: #F59E0B;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* ==================================================
+   ÁREA DE INPUT & BOTÃO
    ================================================== */
 .input-area {
     padding: 14px 16px;
@@ -417,7 +499,7 @@ button#send-btn:active {
 }
 
 /* ==================================================
-   SCROLLBAR & MOBILE ADAPTATION
+   SCROLLBAR & ADAPTAÇÃO MOBILE
    ================================================== */
 #chat-container::-webkit-scrollbar { width: 5px; }
 #chat-container::-webkit-scrollbar-track { background: transparent; }
