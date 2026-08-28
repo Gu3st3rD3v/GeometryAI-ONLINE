@@ -3,7 +3,6 @@ const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const reasoningToggle = document.getElementById('reasoning-toggle');
 
-// Função para escapar HTML e evitar problemas de renderização no código
 function escapeHtml(str) {
     return str
         .replace(/&/g, "&amp;")
@@ -13,13 +12,11 @@ function escapeHtml(str) {
         .replace(/'/g, "&#039;");
 }
 
-// Processador completo de Markdown (Blocos de Código, Código Inline, Negrito, Itálico)
 function formatarMarkdown(texto) {
     if (!texto) return '';
 
     let blocosCodigo = [];
 
-    // 1. Isola e formata os blocos de código iniciados por ```
     texto = texto.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
         const linguagem = lang ? lang.toUpperCase() : 'CÓDIGO';
         const codigoEscapado = escapeHtml(code.trim());
@@ -40,19 +37,15 @@ function formatarMarkdown(texto) {
         return placeholder;
     });
 
-    // 2. Formata códigos inline entre crases simples (`código`)
     texto = texto.replace(/`([^`]+)`/g, function(match, code) {
         return `<code class="inline-code">${escapeHtml(code)}</code>`;
     });
 
-    // 3. Formata Negrito (**texto**) e Itálico (*texto*)
     texto = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     texto = texto.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-    // 4. Substitui quebras de linha normais por <br>
     texto = texto.replace(/\n/g, '<br>');
 
-    // 5. Restaura os blocos de código intactos em seus devidos lugares
     blocosCodigo.forEach((bloco, index) => {
         texto = texto.replace(`___CODE_BLOCK_${index}___`, bloco);
     });
@@ -60,7 +53,6 @@ function formatarMarkdown(texto) {
     return texto;
 }
 
-// Função global para copiar o conteúdo da caixa de código
 window.copiarCodigo = function(btn) {
     const container = btn.closest('.code-container');
     const codeText = container.querySelector('code').innerText;
@@ -85,11 +77,9 @@ async function enviarMensagem() {
 
     const modoRaciocinio = reasoningToggle.checked;
 
-    // 1. Mensagem do usuário
     adicionarMensagem(texto, 'user');
     userInput.value = '';
 
-    // 2. Balão de carregamento
     let statusTexto = modoRaciocinio ? "Calculando matriz de dados... Pensando..." : "Digitando...";
     const botMsgDiv = adicionarMensagem(statusTexto, 'bot');
 
