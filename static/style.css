@@ -1,42 +1,68 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
 
+/* ==================================================
+   VARIÁVEIS DE TEMA (PADRÃO: MODO ESCURO / GLASS)
+   ================================================== */
 :root {
-    /* DashStack Dark + Glassmorphism Palette */
+    /* Cores de Destaque (DashStack UI) */
     --ds-primary: #4880FF;
     --ds-primary-hover: #3567D6;
     --ds-primary-glow: rgba(72, 128, 255, 0.35);
     --ds-primary-light: rgba(72, 128, 255, 0.15);
-    
-    /* Backgrounds com transparência */
+
+    /* Backgrounds e Superfícies (Modo Escuro) */
     --ds-bg-page: #0B0F17;
+    --ds-bg-gradient: radial-gradient(circle at 50% 0%, #1A263B 0%, #0B0F17 75%);
     --ds-bg-card: rgba(23, 32, 48, 0.65);
+    --ds-bg-header: rgba(255, 255, 255, 0.02);
     --ds-bg-subtle: rgba(255, 255, 255, 0.04);
-    --ds-bg-subtle-hover: rgba(255, 255, 255, 0.08);
     --ds-bg-input: rgba(15, 23, 38, 0.6);
     --ds-bg-code: rgba(11, 16, 26, 0.85);
-    
-    /* Cores de Texto */
+
+    /* Tipografia */
     --ds-text-title: #FFFFFF;
     --ds-text-body: #E2E8F0;
     --ds-text-muted: #94A3B8;
-    
-    /* Bordas & Status */
+
+    /* Bordas e Status */
     --ds-border: rgba(255, 255, 255, 0.08);
-    --ds-border-active: rgba(72, 128, 255, 0.4);
     --ds-status-online: #00B69B;
-    
-    /* Arredondamento (Curvas Suaves do 2º Template) */
+
+    /* Arredondamento (Curvas Suaves) */
     --ds-radius-card: 28px;
     --ds-radius-bubble: 20px;
     --ds-radius-elem: 14px;
     --ds-radius-pill: 999px;
-    
-    /* Sombras & Transparência */
+
+    /* Sombras e Efeitos */
     --ds-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(72, 128, 255, 0.05);
     --ds-backdrop: blur(20px) saturate(180%);
     --ds-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ==================================================
+   REGRAS DO MODO CLARO (LIGHT THEME OVERRIDES)
+   ================================================== */
+body.light-theme {
+    --ds-bg-page: #F5F6FA;
+    --ds-bg-gradient: radial-gradient(circle at 50% 0%, #EBF2FF 0%, #F5F6FA 75%);
+    --ds-bg-card: rgba(255, 255, 255, 0.85);
+    --ds-bg-header: rgba(255, 255, 255, 0.4);
+    --ds-bg-subtle: #F4F5F7;
+    --ds-bg-input: #FFFFFF;
+    --ds-bg-code: #1E293B;
+
+    --ds-text-title: #202224;
+    --ds-text-body: #333333;
+    --ds-text-muted: #828893;
+
+    --ds-border: #E0E0E0;
+    --ds-shadow-card: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* ==================================================
+   RESET & LAYOUT BASE
+   ================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -45,7 +71,7 @@
 
 body {
     font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1A263B 0%, #0B0F17 75%);
+    background: var(--ds-bg-gradient);
     background-color: var(--ds-bg-page);
     display: flex;
     justify-content: center;
@@ -53,9 +79,12 @@ body {
     height: 100vh;
     overflow: hidden;
     color: var(--ds-text-body);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Container Principal do Chat (Glassmorphism + Ultra Arredondado) */
+/* ==================================================
+   CONTAINER DO CHAT (GLASSMORPHISM CARD)
+   ================================================== */
 .chat-wrapper {
     width: 100%;
     max-width: 480px;
@@ -70,16 +99,20 @@ body {
     overflow: hidden;
     box-shadow: var(--ds-shadow-card);
     position: relative;
+    transition: var(--ds-transition);
 }
 
-/* Cabeçalho */
+/* ==================================================
+   CABEÇALHO E CONTROLES
+   ================================================== */
 header {
-    background: rgba(255, 255, 255, 0.02);
-    padding: 20px 24px;
+    background: var(--ds-bg-header);
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--ds-border);
+    transition: var(--ds-transition);
 }
 
 .header-left {
@@ -87,7 +120,7 @@ header {
     align-items: center;
 }
 
-/* Indicador Online com Efeito Pulse */
+/* Status Online com Pulsação */
 .status-online {
     width: 10px;
     height: 10px;
@@ -123,11 +156,46 @@ header h1 {
     letter-spacing: -0.2px;
 }
 
-/* Toggle Switch de Raciocínio */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Botão de Alternar Tema (Escuro / Claro) */
+.theme-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--ds-border);
+    color: var(--ds-text-title);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--ds-radius-pill);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--ds-transition);
+    outline: none;
+}
+
+body.light-theme .theme-btn {
+    background: #FFFFFF;
+    border-color: #E0E0E0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.theme-btn:hover {
+    background: var(--ds-primary-light);
+    border-color: var(--ds-primary);
+    transform: scale(1.08);
+}
+
+/* Painel do Switch (Raciocínio) */
 .reasoning-panel {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .reasoning-label {
@@ -141,7 +209,7 @@ header h1 {
 .switch {
     position: relative;
     display: inline-block;
-    width: 42px;
+    width: 40px;
     height: 22px;
 }
 
@@ -151,10 +219,14 @@ header h1 {
     position: absolute; 
     cursor: pointer; 
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.12);
     border: 1px solid var(--ds-border);
     transition: var(--ds-transition); 
     border-radius: var(--ds-radius-pill);
+}
+
+body.light-theme .slider {
+    background-color: #E0E0E0;
 }
 
 .slider:before {
@@ -167,7 +239,7 @@ header h1 {
     background-color: #FFFFFF;
     transition: var(--ds-transition); 
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider {
@@ -177,10 +249,12 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(20px);
+    transform: translateX(18px);
 }
 
-/* Container de Mensagens */
+/* ==================================================
+   ÁREA DE MENSAGENS E BALÕES
+   ================================================== */
 #chat-container {
     flex: 1;
     padding: 24px;
@@ -191,7 +265,6 @@ input:checked + .slider:before {
     scroll-behavior: smooth;
 }
 
-/* Balões de Mensagem (Design Mais Arredondado) */
 .message {
     padding: 14px 20px;
     border-radius: var(--ds-radius-bubble);
@@ -200,6 +273,7 @@ input:checked + .slider:before {
     font-size: 0.925rem;
     word-break: break-word;
     backdrop-filter: blur(10px);
+    transition: var(--ds-transition);
 }
 
 .user {
@@ -219,9 +293,20 @@ input:checked + .slider:before {
     border: 1px solid var(--ds-border);
 }
 
+body.light-theme .bot {
+    background: #F4F5F7;
+    color: #202224;
+    border-color: #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
 .message strong {
     color: #60A5FA;
     font-weight: 700;
+}
+
+body.light-theme .message strong {
+    color: var(--ds-primary);
 }
 
 .message.user strong {
@@ -230,10 +315,9 @@ input:checked + .slider:before {
 
 .message em {
     font-style: italic;
-    color: var(--ds-text-muted);
+    opacity: 0.85;
 }
 
-/* Tag / Meta de Pensamento */
 .thinking-meta {
     font-size: 0.75rem;
     color: #60A5FA;
@@ -245,7 +329,13 @@ input:checked + .slider:before {
     font-weight: 600;
 }
 
-/* Bloco de Código Dark & Arredondado */
+body.light-theme .thinking-meta {
+    color: var(--ds-primary);
+}
+
+/* ==================================================
+   BLOCOS DE CÓDIGO & CODE INLINE
+   ================================================== */
 .code-container {
     margin: 12px 0;
     background: var(--ds-bg-code);
@@ -275,7 +365,7 @@ input:checked + .slider:before {
 .copy-btn {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--ds-border);
-    color: var(--ds-text-body);
+    color: #E2E8F0;
     padding: 5px 12px;
     border-radius: var(--ds-radius-pill);
     font-size: 0.725rem;
@@ -324,13 +414,24 @@ input:checked + .slider:before {
     border: 1px solid rgba(72, 128, 255, 0.2);
 }
 
-/* Área de Input */
+body.light-theme .inline-code {
+    color: var(--ds-primary);
+}
+
+/* ==================================================
+   ÁREA DE INPUT E BOTÃO DE ENVIO
+   ================================================== */
 .input-area {
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.01);
+    background: rgba(0, 0, 0, 0.1);
     display: flex;
     gap: 12px;
     border-top: 1px solid var(--ds-border);
+    transition: var(--ds-transition);
+}
+
+body.light-theme .input-area {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 input {
@@ -352,11 +453,14 @@ input::placeholder {
 
 input:focus {
     border-color: var(--ds-primary);
-    background: rgba(15, 23, 38, 0.85);
     box-shadow: 0 0 15px var(--ds-primary-glow);
 }
 
-button {
+body.light-theme input:focus {
+    box-shadow: 0 0 0 3px rgba(72, 128, 255, 0.2);
+}
+
+button#send-btn {
     background: linear-gradient(135deg, #4880FF 0%, #3567D6 100%);
     color: #FFFFFF;
     border: none;
@@ -370,17 +474,19 @@ button {
     box-shadow: 0 6px 16px rgba(72, 128, 255, 0.3);
 }
 
-button:hover {
+button#send-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(72, 128, 255, 0.45);
     filter: brightness(1.1);
 }
 
-button:active {
+button#send-btn:active {
     transform: translateY(0);
 }
 
-/* Custom Scrollbar Discreta */
+/* ==================================================
+   SCROLLBAR CUSTOMIZADA
+   ================================================== */
 #chat-container::-webkit-scrollbar { 
     width: 6px; 
 }
@@ -390,10 +496,18 @@ button:active {
 }
 
 #chat-container::-webkit-scrollbar-thumb { 
-    background: rgba(255, 255, 255, 0.1); 
+    background: rgba(255, 255, 255, 0.12); 
     border-radius: var(--ds-radius-pill); 
+}
+
+body.light-theme #chat-container::-webkit-scrollbar-thumb {
+    background: #E0E0E0;
 }
 
 #chat-container::-webkit-scrollbar-thumb:hover { 
     background: rgba(255, 255, 255, 0.25); 
+}
+
+body.light-theme #chat-container::-webkit-scrollbar-thumb:hover {
+    background: var(--ds-text-muted);
 }
