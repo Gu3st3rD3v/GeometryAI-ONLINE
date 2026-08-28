@@ -1,20 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
 
-/* ==================================================
-   VARIÁVEIS DE TEMA (MODO DARK GLASS)
-   ================================================== */
 :root {
     --ds-primary: #4880FF;
-    --ds-primary-hover: #3567D6;
     --ds-primary-glow: rgba(72, 128, 255, 0.4);
-    --ds-primary-light: rgba(72, 128, 255, 0.15);
-
     --ds-bg-page: #060911;
     --ds-bg-card: rgba(15, 23, 42, 0.65);
     --ds-bg-header: rgba(255, 255, 255, 0.03);
     --ds-bg-subtle: rgba(255, 255, 255, 0.05);
     --ds-bg-input: rgba(15, 23, 42, 0.75);
-    --ds-bg-code: rgba(10, 15, 26, 0.9);
 
     --ds-text-title: #FFFFFF;
     --ds-text-body: #F1F5F9;
@@ -25,7 +18,6 @@
 
     --ds-radius-card: 28px;
     --ds-radius-bubble: 20px;
-    --ds-radius-elem: 14px;
     --ds-radius-pill: 999px;
 
     --ds-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(72, 128, 255, 0.1);
@@ -33,9 +25,6 @@
     --ds-transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ==================================================
-   RESET & ESTRUTURA GLOBAL
-   ================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -61,7 +50,7 @@ body {
 }
 
 /* ==================================================
-   BACKGROUND ANIMADO - AURORA BOREAL
+   AURORA 1: FUNDO ANIMADO AUTOMÁTICO
    ================================================== */
 .aurora-bg {
     position: fixed;
@@ -129,7 +118,30 @@ body {
 }
 
 /* ==================================================
-   CONTAINER DO CHAT (RESPONSIVO & GLASS)
+   AURORA 2: INTERATIVA (MOUSETRAIL / TOUCH)
+   ================================================== */
+.aurora-interactive {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.45) 0%, rgba(147, 51, 234, 0.35) 40%, rgba(72, 128, 255, 0) 70%);
+    filter: blur(45px);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.08s ease-out;
+}
+
+.aurora-interactive.active {
+    opacity: 1;
+}
+
+/* ==================================================
+   CONTAINER DO CHAT
    ================================================== */
 .chat-wrapper {
     position: relative;
@@ -146,17 +158,8 @@ body {
     flex-direction: column;
     overflow: hidden;
     box-shadow: var(--ds-shadow-card);
-    animation: wrapperFadeIn 0.6s ease-out;
 }
 
-@keyframes wrapperFadeIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* ==================================================
-   CABEÇALHO
-   ================================================== */
 header {
     background: var(--ds-bg-header);
     padding: 16px 20px;
@@ -167,10 +170,7 @@ header {
     flex-shrink: 0;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-}
+.header-left { display: flex; align-items: center; }
 
 .status-online {
     width: 10px;
@@ -182,95 +182,31 @@ header {
     box-shadow: 0 0 10px var(--ds-status-online);
 }
 
-.status-online::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: var(--ds-status-online);
-    border-radius: 50%;
-    animation: pulse 2s infinite ease-in-out;
-    z-index: -1;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(2.6); opacity: 0; }
-}
-
 header h1 {
     color: var(--ds-text-title);
     font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -0.2px;
 }
 
-.header-controls {
-    display: flex;
-    align-items: center;
-}
+.reasoning-panel { display: flex; align-items: center; gap: 8px; }
+.reasoning-label { color: var(--ds-text-muted); font-size: 0.725rem; font-weight: 700; text-transform: uppercase; }
 
-/* Switch de Raciocínio */
-.reasoning-panel {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.reasoning-label {
-    color: var(--ds-text-muted);
-    font-size: 0.725rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 38px;
-    height: 20px;
-}
-
+.switch { position: relative; display: inline-block; width: 38px; height: 20px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-
 .slider {
-    position: absolute; 
-    cursor: pointer; 
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(255, 255, 255, 0.12);
-    border: 1px solid var(--ds-border);
-    border-radius: var(--ds-radius-pill);
-    transition: var(--ds-transition-smooth);
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.12); border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius-pill); transition: var(--ds-transition-smooth);
 }
-
 .slider:before {
-    position: absolute; 
-    content: ""; 
-    height: 14px; 
-    width: 14px; 
-    left: 2px; 
-    bottom: 2px;
-    background-color: #FFFFFF;
-    transition: var(--ds-transition-smooth); 
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px;
+    background-color: #FFFFFF; transition: var(--ds-transition-smooth); border-radius: 50%;
 }
-
-input:checked + .slider {
-    background-color: var(--ds-primary);
-    border-color: var(--ds-primary);
-    box-shadow: 0 0 12px var(--ds-primary-glow);
-}
-
-input:checked + .slider:before {
-    transform: translateX(18px);
-}
+input:checked + .slider { background-color: var(--ds-primary); border-color: var(--ds-primary); }
+input:checked + .slider:before { transform: translateX(18px); }
 
 /* ==================================================
-   ÁREA DE MENSAGENS COM ANIMAÇÕES
+   MENSAGENS & INTERAÇÃO NAS LETRAS (HOVER / JUMP)
    ================================================== */
 #chat-container {
     flex: 1;
@@ -279,7 +215,6 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    scroll-behavior: smooth;
 }
 
 .message {
@@ -289,12 +224,12 @@ input:checked + .slider:before {
     line-height: 1.5;
     font-size: 0.925rem;
     word-break: break-word;
-    animation: messagePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: messagePop 0.35s ease-out forwards;
 }
 
 @keyframes messagePop {
-    0% { opacity: 0; transform: translateY(12px) scale(0.95); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .user {
@@ -302,8 +237,6 @@ input:checked + .slider:before {
     color: #FFFFFF;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 6px 18px rgba(72, 128, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .bot {
@@ -314,8 +247,38 @@ input:checked + .slider:before {
     border: 1px solid var(--ds-border);
 }
 
+/* Estilo individual para cada letra interativa */
+.char {
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease, text-shadow 0.2s ease;
+    cursor: default;
+    will-change: transform;
+}
+
+.char.space {
+    width: 0.28em;
+}
+
+/* Aumento da letra ao passar o mouse ou dedo */
+.char:hover, .char.touch-active {
+    transform: scale(1.45) translateY(-3px);
+    color: #38BDF8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+
+/* Animação do salto da letra ao ser digitada */
+.char.jump {
+    animation: letterJump 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes letterJump {
+    0% { transform: translateY(12px) scale(0.5); opacity: 0; }
+    50% { transform: translateY(-8px) scale(1.3); color: #60A5FA; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
 /* ==================================================
-   ÁREA DE INPUT (OTIMIZADA PARA MOBILE)
+   ÁREA DE INPUT
    ================================================== */
 .input-area {
     padding: 14px 16px;
@@ -328,7 +291,7 @@ input:checked + .slider:before {
 
 input#user-input {
     flex: 1;
-    min-width: 0; /* Previne estouro flex em telas pequenas */
+    min-width: 0;
     background: var(--ds-bg-input);
     border: 1px solid var(--ds-border);
     padding: 12px 18px;
@@ -336,18 +299,24 @@ input#user-input {
     color: var(--ds-text-title);
     outline: none;
     font-family: inherit;
-    font-size: 16px; /* Evita zoom automático no iOS Safari */
+    font-size: 16px;
     transition: var(--ds-transition-smooth);
 }
 
-input#user-input::placeholder {
-    color: var(--ds-text-muted);
+/* Animação leve no input enquanto digita */
+input#user-input.typing {
+    animation: inputPulse 0.15s ease;
+}
+
+@keyframes inputPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.01); border-color: var(--ds-primary); }
+    100% { transform: scale(1); }
 }
 
 input#user-input:focus {
     border-color: var(--ds-primary);
     box-shadow: 0 0 16px var(--ds-primary-glow);
-    background: rgba(15, 23, 42, 0.95);
 }
 
 button#send-btn {
@@ -356,61 +325,17 @@ button#send-btn {
     border: none;
     padding: 12px 22px;
     border-radius: var(--ds-radius-pill);
-    font-family: inherit;
     font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(72, 128, 255, 0.3);
     transition: var(--ds-transition-smooth);
     flex-shrink: 0;
 }
 
-button#send-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(72, 128, 255, 0.45);
-}
+button#send-btn:active { transform: scale(0.95); }
 
-button#send-btn:active {
-    transform: translateY(0) scale(0.96);
-}
-
-/* ==================================================
-   SCROLLBAR CUSTOMIZADA
-   ================================================== */
-#chat-container::-webkit-scrollbar { width: 5px; }
-#chat-container::-webkit-scrollbar-track { background: transparent; }
-#chat-container::-webkit-scrollbar-thumb { 
-    background: rgba(255, 255, 255, 0.15); 
-    border-radius: var(--ds-radius-pill); 
-}
-
-/* ==================================================
-   AJUSTES ESPECÍFICOS PARA MOBILE (DISPOSITIVOS MÓVEIS)
-   ================================================== */
 @media (max-width: 600px) {
-    body {
-        align-items: flex-start;
-    }
-
-    .chat-wrapper {
-        width: 100%;
-        max-width: 100%;
-        height: 100dvh; /* Garante que o input fique visível no celular */
-        border-radius: 0;
-        border: none;
-    }
-
-    header {
-        padding: 14px 16px;
-    }
-
-    .input-area {
-        padding: 12px 14px;
-        /* Garante margem de segurança no fundo de iPhones e celulares modernos */
-        padding-bottom: max(12px, env(safe-area-inset-bottom));
-    }
-
-    button#send-btn {
-        padding: 12px 18px;
-    }
+    body { align-items: flex-start; }
+    .chat-wrapper { width: 100%; height: 100dvh; border-radius: 0; border: none; }
+    .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 }
